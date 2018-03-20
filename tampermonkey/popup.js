@@ -6,7 +6,7 @@
 // @author       duzitong
 // @include      http://*
 // @include      https://*
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 (function() {
@@ -14,32 +14,73 @@
 
     // Your code here...
     var stocks = new Map();
-    stocks.set('159952', '创业ETF');
-    stocks.set('159920', '恒生ETF');
+    stocks.set('sz159952', '创业ETF');
+    stocks.set('sz159920', '恒生ETF');
 
     function hide_stock() {
         document.getElementById("stock-popup").style.display = 'None';
     }
 
-    function addStock(value, key, map) {
+    function create_container(e, type) {
+        var container = document.createElement('div');
+        if (type == "left") {
+            container.setAttribute("style", "height: 30px; width: 70px; float: left;");
+        } else if (type == "mid") {
+            container.setAttribute("style", "height: 30px; width: 70px;  float: left;");
+        } else {
+            container.setAttribute("style", "height: 30px; width: 70px;  float: right;");
+        }
+        container.appendChild(e);
+        return container;
+    }
+
+    function add_stock(value, key, map) {
         var stock = document.createElement ('div');
         stock.setAttribute("id", key);
-        stock.setAttribute("style", "height: 30px; width: 200px;");
+        stock.setAttribute("style", "height: 30px; width: 210px;");
         document.getElementById("stock-popup").appendChild(stock);
-        var name = document.createElement ('b');
+        var name = document.createElement('b');
         name.innerHTML = value;
         name.setAttribute("style", "color: white");
-        stock.appendChild(name);
+        stock.appendChild(create_container(name, "left"));
+        var price = document.createElement('b');
+        price.setAttribute("id", key + "-price");
+        stock.appendChild(create_container(price, "mid"));
+        var change = document.createElement('b');
+        change.setAttribute("id", key + "-change");
+        stock.appendChild(create_container(change, "right"));
+    }
+
+    function update_stock(value, key, map) {
+        GM_xmlhttpRequest({
+            method: 'get',
+            url: 'http://hq.sinajs.cn/list=' + key,
+            onload : function (response) {
+                var resp = response.responseText;
+                var price = resp.split(",")[3];
+                document.getElementById(key + "-price").innerHTML = price;
+                var change = (price - resp.split(",")[2]) / resp.split(",")[2];
+                document.getElementById(key + "-change").innerHTML = Number(change*100).toFixed(1) + '%';
+                if (change > 0) {
+                    document.getElementById(key + "-price").style.color = "red";
+                    document.getElementById(key + "-change").style.color = "red";
+                } else {
+                    document.getElementById(key + "-price").style.color = "green";
+                    document.getElementById(key + "-change").style.color = "green";
+                }
+            }
+        });
     }
 
     var stockPopup = document.createElement ('div');
-    var style = 'position: fixed; top: 0px; right: 5px; width: 200px; z-index: 100000; background-color: rgba(0, 153, 204, 0.7); overflow: visible; height: 0px;';
+    var style = 'position: fixed; top: 0px; right: 5px; width: 210px; z-index: 100000; background-color: rgba(0, 153, 204, 0.7); overflow: visible; height: 0px;';
     stockPopup.innerHTML   = '<div id="stock-popup" style="' + style + '" > \
-    </div>';
+</div>';
 
     document.body.appendChild (stockPopup);
     document.getElementById("stock-popup").style.height = 30 * stocks.size + 'px';
-    stocks.forEach(addStock);
+    stocks.forEach(add_stock);
+    stocks.forEach(update_stock);
 
     dragElement(document.getElementById(("stock-popup")));
 
