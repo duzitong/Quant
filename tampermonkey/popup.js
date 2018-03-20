@@ -19,6 +19,7 @@
 
     function hide_stock() {
         document.getElementById("stock-popup").style.display = 'None';
+        window.clearInterval(updater);
     }
 
     function create_container(e, type) {
@@ -81,6 +82,18 @@
     document.getElementById("stock-popup").style.height = 30 * stocks.size + 'px';
     stocks.forEach(add_stock);
     stocks.forEach(update_stock);
+    var updater = window.setInterval(function(){stocks.forEach(update_stock);},1000);
+    window.onfocus = function() {
+        console.log('focus');
+        if (updater == null) {
+            updater = window.setInterval(function(){stocks.forEach(update_stock);},1000);
+        }
+    };
+    window.onblur = function() {
+        console.log('blur');
+        window.clearInterval(updater);
+        updater = null;
+    };
 
     dragElement(document.getElementById(("stock-popup")));
 
