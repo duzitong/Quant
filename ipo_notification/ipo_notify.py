@@ -33,17 +33,17 @@ for line in soup.find(id='NewStockTable').find_all('tr')[3:]:
     except:
         traceback.print_exc()
         continue
+if len(stocks) > 1:
+    with open(os.path.join(os.path.dirname(__file__), 'smtp.json')) as f:
+        config = json.load(f)
 
-with open(os.path.join(os.path.dirname(__file__), 'smtp.json')) as f:
-    config = json.load(f)
+    msg = MIMEText(tabulate(stocks), 'plain', 'utf-8')
+    msg['From'] = config['from']
+    msg['To'] = ','.join(config['to'])
+    msg['Subject'] = Header(u'明日新股', 'utf-8').encode()
 
-msg = MIMEText(tabulate(stocks), 'plain', 'utf-8')
-msg['From'] = config['from']
-msg['To'] = ','.join(config['to'])
-msg['Subject'] = Header(u'明日新股', 'utf-8').encode()
-
-server = smtplib.SMTP_SSL(config['server'], 465)
-server.set_debuglevel(1)
-server.login(config['from'], config['password'])
-server.sendmail(config['from'], config['to'], msg.as_string())
-server.quit()
+    server = smtplib.SMTP_SSL(config['server'], 465)
+    server.set_debuglevel(1)
+    server.login(config['from'], config['password'])
+    server.sendmail(config['from'], config['to'], msg.as_string())
+    server.quit()
