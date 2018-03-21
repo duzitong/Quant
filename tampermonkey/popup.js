@@ -37,7 +37,7 @@
     }
 
     function set_font(e) {
-        e.setAttribute("style", "font-size:14px");
+        e.setAttribute("style", "font-size:14px; vertical-align: middle; line-height: 30px;");
         return e;
     }
 
