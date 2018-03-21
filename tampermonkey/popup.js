@@ -16,6 +16,7 @@
     var stocks = new Map();
     stocks.set('sz159952', '创业ETF');
     stocks.set('sz159920', '恒生ETF');
+    stocks.set('sh601318', '中国平安');
 
     function hide_stock() {
         document.getElementById("stock-popup").style.display = 'None';
@@ -70,6 +71,9 @@
                 if (change > 0) {
                     document.getElementById(key + "-price").style.color = "red";
                     document.getElementById(key + "-change").style.color = "red";
+                } else if (change == 0) {
+                    document.getElementById(key + "-price").style.color = "black";
+                    document.getElementById(key + "-change").style.color = "black";
                 } else {
                     document.getElementById(key + "-price").style.color = "green";
                     document.getElementById(key + "-change").style.color = "green";
