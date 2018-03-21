@@ -35,6 +35,11 @@
         return container;
     }
 
+    function set_font(e) {
+        e.setAttribute("style", "font-size:14px");
+        return e;
+    }
+
     function add_stock(value, key, map) {
         var stock = document.createElement ('div');
         stock.setAttribute("id", key);
@@ -42,14 +47,14 @@
         document.getElementById("stock-popup").appendChild(stock);
         var name = document.createElement('b');
         name.innerHTML = value;
-        name.setAttribute("style", "color: white");
-        stock.appendChild(create_container(name, "left"));
+        stock.appendChild(create_container(set_font(name), "left"));
+        name.style.color = "white";
         var price = document.createElement('b');
         price.setAttribute("id", key + "-price");
-        stock.appendChild(create_container(price, "mid"));
+        stock.appendChild(create_container(set_font(price), "mid"));
         var change = document.createElement('b');
         change.setAttribute("id", key + "-change");
-        stock.appendChild(create_container(change, "right"));
+        stock.appendChild(create_container(set_font(change), "right"));
     }
 
     function update_stock(value, key, map) {
@@ -61,7 +66,7 @@
                 var price = resp.split(",")[3];
                 document.getElementById(key + "-price").innerHTML = price;
                 var change = (price - resp.split(",")[2]) / resp.split(",")[2];
-                document.getElementById(key + "-change").innerHTML = Number(change*100).toFixed(1) + '%';
+                document.getElementById(key + "-change").innerHTML = Number(change*100).toFixed(2) + '%';
                 if (change > 0) {
                     document.getElementById(key + "-price").style.color = "red";
                     document.getElementById(key + "-change").style.color = "red";
