@@ -14,6 +14,7 @@
 
     // Your code here...
     var stocks = new Map();
+    stocks.set('sz399300', '沪深300');
     stocks.set('sz159952', '创业ETF');
     stocks.set('sz159920', '恒生ETF');
     stocks.set('sh601318', '中国平安');
@@ -37,7 +38,7 @@
     }
 
     function set_font(e) {
-        e.setAttribute("style", "font-size:14px; vertical-align: middle; line-height: 30px;");
+        e.setAttribute("style", "font-size:14px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif;");
         return e;
     }
 
