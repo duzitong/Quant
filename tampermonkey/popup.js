@@ -72,8 +72,8 @@
                     document.getElementById(key + "-price").style.color = "red";
                     document.getElementById(key + "-change").style.color = "red";
                 } else if (change == 0) {
-                    document.getElementById(key + "-price").style.color = "black";
-                    document.getElementById(key + "-change").style.color = "black";
+                    document.getElementById(key + "-price").style.color = "white";
+                    document.getElementById(key + "-change").style.color = "white";
                 } else {
                     document.getElementById(key + "-price").style.color = "green";
                     document.getElementById(key + "-change").style.color = "green";
@@ -83,7 +83,7 @@
     }
 
     var stockPopup = document.createElement ('div');
-    var style = 'position: fixed; top: 0px; right: 5px; width: 210px; z-index: 100000; background-color: rgba(0, 153, 204, 0.7); overflow: visible; height: 0px;';
+    var style = 'position: fixed; top: 0px; right: 5px; width: 210px; z-index: 100000; background-color: rgba(0,0,0,0.8); overflow: visible; height: 0px;';
     stockPopup.innerHTML   = '<div id="stock-popup" style="' + style + '" > \
 </div>';
 
