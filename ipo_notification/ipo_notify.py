@@ -12,6 +12,7 @@ from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 import smtplib
 import json
+import os
 
 resp = requests.get('http://vip.stock.finance.sina.com.cn/corp/go.php/vRPD_NewStockIssue/page/1.phtml')
 resp.encoding = 'gb18030' 
@@ -33,7 +34,7 @@ for line in soup.find(id='NewStockTable').find_all('tr')[3:]:
         traceback.print_exc()
         continue
 
-with open('smtp.json') as f:
+with open(os.path.join(os.path.dirname(__file__), 'smtp.json')) as f:
     config = json.load(f)
 
 msg = MIMEText(tabulate(stocks), 'plain', 'utf-8')
@@ -44,5 +45,5 @@ msg['Subject'] = Header(u'明日新股', 'utf-8').encode()
 server = smtplib.SMTP_SSL(config['server'], 465)
 server.set_debuglevel(1)
 server.login(config['from'], config['password'])
-server.sendmail(from_addr, config['to'], msg.as_string())
+server.sendmail(config['from'], config['to'], msg.as_string())
 server.quit()
