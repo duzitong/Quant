@@ -123,12 +123,12 @@
     stockPopup.setAttribute('id', 'stock-popup');
 
     var lines = document.createElement('div');
-    lines.setAttribute('style', 'position: fixed; top: 0px; right: 245px; width: 600px; z-index: 100000; background-color: white; overflow: visible; height: 0px; display: none;');
+    lines.setAttribute('style', 'position: fixed; top: 0px; right: 245px; width: 600px; z-index: 100000; background-color: white; overflow: visible; height: auto; display: none;');
     lines.setAttribute('id', 'lines');
     lines.innerHTML = '<img src="" id="timeline" style="width: 600px;">';
 
     var status = document.createElement('div');
-    status.setAttribute('style', 'position: fixed; top: 0px; right: 5px; width: 240px; z-index: 100000; background-color: rgba(0,0,0,0.8); overflow: visible; height: 0px; display: none;');
+    status.setAttribute('style', 'position: fixed; top: 0px; right: 5px; width: 240px; z-index: 100000; background-color: rgba(0,0,0,0.8); overflow: visible; height: 150px; display: none;');
     status.setAttribute('id', 'status');
     status.innerHTML = "<table border='0' bgcolor: 'black' rules=none frame=void> \
 <tr><td width='40px' class='red'><b>买1</b></td><td width='40px' class='red' id='buy1p'></td><td width='40px' class='red' id='buy1a'></td><td width='40px' class='green'><b>卖1</b></td><td width='40px' class='green' id='sell1p'</td><td width='40px' class='green' id='sell1a'></td></tr> \
@@ -141,7 +141,7 @@
     document.body.appendChild (stockPopup);
     document.body.appendChild (lines);
     document.body.appendChild (status);
-    GM_addStyle('td { background-color: rgba(0,0,0,0.8); width=40px; color: white; border: 0px; font-size:14px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif;} td.red {color: red} td.green {color: green}');
+    GM_addStyle('td { width=40px; color: white; border: 0px; font-size:14px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif;} td.red {color: red} td.green {color: green}');
     stockPopup.style.height = 30 * stocks.size + 'px';
     status.style.top = stockPopup.style.height;
     stocks.forEach(add_stock);
