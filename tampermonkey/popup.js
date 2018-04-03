@@ -62,6 +62,7 @@
                 document.getElementById('timeline').src = 'http://image.sinajs.cn/newchart/min/n/' + e.srcElement.id + '.gif';
                 document.getElementById('lines').style.display = '';
                 document.getElementById('status').style.display = '';
+                update_stock('', key);
             }
         });
         name.addEventListener('mouseout', function(e) {
