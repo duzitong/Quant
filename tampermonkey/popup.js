@@ -16,12 +16,16 @@
 
     // Your code here...
     var stocks = new Map();
-    stocks.set('sh000016', '上证50');
+    stocks.set('sh000001', '上证指数:-1');
+    stocks.set('sz399001', '深证成指');
+    stocks.set('sz399006', '创业板指');
     stocks.set('sz399300', '沪深300');
     stocks.set('sh510880', '红利ETF');
     stocks.set('sz159952', '创业ETF');
     stocks.set('sz159920', '恒生ETF');
     stocks.set('sh601318', '中国平安');
+
+    var alerted = new Map();
 
     var current = '';
 
@@ -55,7 +59,7 @@
         document.getElementById("stock-popup").appendChild(stock);
         var name = document.createElement('b');
         name.setAttribute("id", key);
-        name.innerHTML = value;
+        name.innerHTML = value.split(':')[0];
         name.addEventListener('mouseover', function(e) {
             if (current != e.srcElement.id) {
                 current = e.srcElement.id;
@@ -89,6 +93,13 @@
                 var resp = response.responseText;
                 var price = resp.split(",")[3];
                 document.getElementById(key + "-price").innerHTML = price;
+                if (value.includes(':')) {
+                    var alertPrice = value.split(':')[1];
+                    if (price < alertPrice && !alerted[key]) {
+                        alert(value.split(':')[0] + '低于警示价！');
+                        alerted[key] = true;
+                    }
+                }
                 var change = (price - resp.split(",")[2]) / resp.split(",")[2];
                 document.getElementById(key + "-change").innerHTML = Number(change*100).toFixed(2) + '%';
                 if (change > 0) {
