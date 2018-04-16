@@ -15,10 +15,11 @@
     'use strict';
 
     // Your code here...
+    const regex = /^(.+?)(<.*?)?(>.*?)?$/g;
     var stocks = new Map();
-    stocks.set('sh000001', '上证指数:-1');
-    stocks.set('sz399001', '深证成指');
-    stocks.set('sz399006', '创业板指');
+    stocks.set('sh000001', '上证指数<0>10000');
+    stocks.set('sz399001', '深证成指<0');
+    stocks.set('sz399006', '创业板指>10000');
     stocks.set('sz399300', '沪深300');
     stocks.set('sh510880', '红利ETF');
     stocks.set('sz159952', '创业ETF');
@@ -53,13 +54,21 @@
         return e;
     }
 
+    function get_matched(value) {
+        var match = regex.exec(value);
+        if (match == null) {
+            match = regex.exec(value);
+        }
+        return match;
+    }
+
     function add_stock(value, key, map) {
         var stock = document.createElement ('div');
         stock.setAttribute("style", "height: 30px; width: 240px;");
         document.getElementById("stock-popup").appendChild(stock);
         var name = document.createElement('b');
         name.setAttribute("id", key);
-        name.innerHTML = value.split(':')[0];
+        name.innerHTML = get_matched(value)[1];
         name.addEventListener('mouseover', function(e) {
             if (current != e.srcElement.id) {
                 current = e.srcElement.id;
@@ -93,12 +102,16 @@
                 var resp = response.responseText;
                 var price = resp.split(",")[3];
                 document.getElementById(key + "-price").innerHTML = price;
-                if (value.includes(':')) {
-                    var alertPrice = value.split(':')[1];
-                    if (price < alertPrice && !alerted[key]) {
-                        alert(value.split(':')[0] + '低于警示价！');
-                        alerted[key] = true;
-                    }
+                let name = get_matched(value)[1];
+                let lowerPrice = get_matched(value)[2];
+                let upperPrice = get_matched(value)[3];
+                if (lowerPrice != null && Number(price) < Number(lowerPrice.substr(1)) && !alerted[key]) {
+                    alert(name + '低于警示价！');
+                    alerted[key] = true;
+                }
+                if (upperPrice != null && Number(price) > Number(upperPrice.substr(1)) && !alerted[key]) {
+                    alert(name + '高于警示价！');
+                    alerted[key] = true;
                 }
                 var change = (price - resp.split(",")[2]) / resp.split(",")[2];
                 document.getElementById(key + "-change").innerHTML = Number(change*100).toFixed(2) + '%';
