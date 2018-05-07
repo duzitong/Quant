@@ -166,8 +166,8 @@
     document.body.appendChild (stockPopup);
     document.body.appendChild (lines);
     document.body.appendChild (status);
-    GM_addStyle('td.red {height=30px; border: 0px; font-size:14px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif; color: red;} \
-td.green {height=30px; border: 0px; font-size:14px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif; color: green;}');
+    GM_addStyle('td.red {height=30px; border: 0px; font-size:12px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif; color: red;} \
+td.green {height=30px; border: 0px; font-size:12px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif; color: green;}');
     stockPopup.style.height = 30 * stocks.size + 'px';
     status.style.top = stockPopup.style.height;
     stocks.forEach(add_stock);
