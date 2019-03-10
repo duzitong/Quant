@@ -15,13 +15,18 @@
     'use strict';
 
     // Your code here...
+    const regex = /^(.+?)(<.*?)?(>.*?)?$/g;
     var stocks = new Map();
-    stocks.set('sh000016', '上证50');
+    stocks.set('sh000001', '上证指数<0>10000');
+    stocks.set('sz399001', '深证成指<0');
+    stocks.set('sz399006', '创业板指>10000');
     stocks.set('sz399300', '沪深300');
     stocks.set('sh510880', '红利ETF');
     stocks.set('sz159952', '创业ETF');
     stocks.set('sz159920', '恒生ETF');
     stocks.set('sh601318', '中国平安');
+
+    var alerted = new Map();
 
     var current = '';
 
@@ -49,13 +54,21 @@
         return e;
     }
 
+    function get_matched(value) {
+        var match = regex.exec(value);
+        if (match == null) {
+            match = regex.exec(value);
+        }
+        return match;
+    }
+
     function add_stock(value, key, map) {
         var stock = document.createElement ('div');
         stock.setAttribute("style", "height: 30px; width: 240px;");
         document.getElementById("stock-popup").appendChild(stock);
         var name = document.createElement('b');
         name.setAttribute("id", key);
-        name.innerHTML = value;
+        name.innerHTML = get_matched(value)[1];
         name.addEventListener('mouseover', function(e) {
             if (current != e.srcElement.id) {
                 current = e.srcElement.id;
@@ -89,6 +102,17 @@
                 var resp = response.responseText;
                 var price = resp.split(",")[3];
                 document.getElementById(key + "-price").innerHTML = price;
+                let name = get_matched(value)[1];
+                let lowerPrice = get_matched(value)[2];
+                let upperPrice = get_matched(value)[3];
+                if (lowerPrice != null && Number(price) < Number(lowerPrice.substr(1)) && !alerted[key]) {
+                    alert(name + '低于警示价！');
+                    alerted[key] = true;
+                }
+                if (upperPrice != null && Number(price) > Number(upperPrice.substr(1)) && !alerted[key]) {
+                    alert(name + '高于警示价！');
+                    alerted[key] = true;
+                }
                 var change = (price - resp.split(",")[2]) / resp.split(",")[2];
                 document.getElementById(key + "-change").innerHTML = Number(change*100).toFixed(2) + '%';
                 if (change > 0) {
@@ -129,7 +153,7 @@
     lines.innerHTML = '<img src="" id="timeline" style="width: 600px;">';
 
     var status = document.createElement('div');
-    status.setAttribute('style', 'position: fixed; top: 0px; right: 5px; width: 240px; z-index: 100000; background-color: rgba(0,0,0,0.8); overflow: visible; height: 150px; display: none;');
+    status.setAttribute('style', 'position: fixed; top: 0px; right: 5px; width: 240px; z-index: 100000; background-color: rgba(0,0,0,0.8); overflow: visible; display: none;');
     status.setAttribute('id', 'status');
     status.innerHTML = "<table border='0' bgcolor: 'black' rules=none frame=void> \
 <tr><td width='40px' class='red'><b>买1</b></td><td width='40px' class='red' id='buy1p'></td><td width='40px' class='red' id='buy1a'></td><td width='40px' class='green'><b>卖1</b></td><td width='40px' class='green' id='sell1p'</td><td width='40px' class='green' id='sell1a'></td></tr> \
@@ -142,7 +166,8 @@
     document.body.appendChild (stockPopup);
     document.body.appendChild (lines);
     document.body.appendChild (status);
-    GM_addStyle('td { width=40px; color: white; border: 0px; font-size:14px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif;} td.red {color: red} td.green {color: green}');
+    GM_addStyle('td.red {height=30px; border: 0px; font-size:12px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif; color: red;} \
+td.green {height=30px; border: 0px; font-size:12px; text-align: center; vertical-align: middle; line-height: 30px; font-family: Arial, Helvetica, sans-serif; color: green;}');
     stockPopup.style.height = 30 * stocks.size + 'px';
     status.style.top = stockPopup.style.height;
     stocks.forEach(add_stock);
